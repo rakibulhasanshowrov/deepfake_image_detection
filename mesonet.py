@@ -9,17 +9,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-# Path to your dataset full
-train_dir = 'E:/498R/dataset/Train'
-validation_dir = 'E:/498R/dataset/Validation/'
-test_dir = 'E:/498R/dataset/Test/'
-output_dir='E:/498R/result/full/'
-# Path to your dataset simple
-# train_dir = 'E:/498R/dataset_simple/Train'
-# validation_dir = 'E:/498R/dataset_simple/Validation/'
-# test_dir = 'E:/498R/dataset_simple/Test/'
-# output_dir='E:/498R/result/simple/'
-# output_dir='E:/498R/result/simple/'
+# # Path to your dataset full
+# train_dir = 'E:/498R/dataset/Train'
+# validation_dir = 'E:/498R/dataset/Validation/'
+# test_dir = 'E:/498R/dataset/Test/'
+# output_dir='E:/498R/result/full/'
+Path to your dataset simple
+train_dir = 'E:/498R/dataset_simple/Train'
+validation_dir = 'E:/498R/dataset_simple/Validation/'
+test_dir = 'E:/498R/dataset_simple/Test/'
+output_dir='E:/498R/result/simple/'
+output_dir='E:/498R/result/simple/'
 
 # Parameters
 IMG_SIZE = (256, 256)  # Slightly bigger image size for MesoNet
