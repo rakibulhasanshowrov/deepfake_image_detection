@@ -10,11 +10,12 @@ import pickle
 
 # Base dataset directory
 base_dataset_dir = 'E:/498R/dataset_simple'
+# base_dataset_dir = 'E:/498R/Dataset'
 
 class Faceloading:
     def __init__(self, directory):
         self.directory = directory
-        self.target_size = (160, 160)
+        self.target_size = (224, 224)
         self.featureI = []
         self.classL = []
         self.detector = MTCNN()
@@ -25,8 +26,9 @@ class Faceloading:
         result = self.detector.detect_faces(image)
         if result:  # Ensure a face is detected
             x, y, w, h = result[0]['box']
+            imager = cv.imread(dir)
             x, y = abs(x), abs(y)
-            face = image[y:y + h, x:x + w]
+            face = imager[y:y + h, x:x + w]
             face_arr = cv.resize(face, self.target_size)
             return face_arr
         else:
@@ -125,4 +127,5 @@ for dataset_type in ['Train', 'Test', 'Validation']:
     
     # Save the features and labels for this dataset
     output_dir = f'E:/498R/Code/Result/simple/{dataset_type}'
+    # output_dir = f'E:/498R/Code/Result/full/{dataset_type}'
     save_data(features, labels, output_dir, dataset_type.lower())

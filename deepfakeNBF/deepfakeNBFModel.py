@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 
+
 # Paths to the saved .npy files for features and labels
 train_features_path = 'E:/498R/Code/Result/simple/Train/train_features.npy'
 train_labels_path = 'E:/498R/Code/Result/simple/Train/train_labels.npy'
@@ -16,6 +17,8 @@ test_labels_path = 'E:/498R/Code/Result/simple/Test/test_labels.npy'
 
 val_features_path = 'E:/498R/Code/Result/simple/Validation/validation_features.npy'
 val_labels_path = 'E:/498R/Code/Result/simple/Validation/validation_labels.npy'
+# Enable interactive mode
+plt.ion()
 
 # Load the features and labels for train, test, and validation datasets
 train_features = np.load(train_features_path)
@@ -34,10 +37,13 @@ test_labels = np.array([label_mapping[label] for label in test_labels])
 val_labels = np.array([label_mapping[label] for label in val_labels])
 
 # 1. Train an SVM model
-clf = svm.SVC(probability=True)  # Set probability=True to get confidence scores later
+clf = svm.SVC(kernel='linear',probability=True)  # Set probability=True to get confidence scores later
 clf.fit(train_features, train_labels)
 
 # 2. Evaluate the model
+# Predict on the train set
+train_predictions = clf.predict(train_features)
+
 # Predict on the test set
 test_predictions = clf.predict(test_features)
 
@@ -46,6 +52,12 @@ val_predictions = clf.predict(val_features)
 
 # 3. Calculate and save metrics (Accuracy, Recall, F1, Precision) for test and validation sets
 metrics = {}
+
+# Calculate metrics for train set
+metrics['train_accuracy'] = accuracy_score(train_labels, train_predictions)
+metrics['train_recall'] = recall_score(train_labels, train_predictions)
+metrics['train_precision'] = precision_score(train_labels, train_predictions)
+metrics['train_f1'] = f1_score(train_labels, train_predictions)
 
 # Calculate metrics for test set
 metrics['test_accuracy'] = accuracy_score(test_labels, test_predictions)
@@ -58,6 +70,29 @@ metrics['val_accuracy'] = accuracy_score(val_labels, val_predictions)
 metrics['val_recall'] = recall_score(val_labels, val_predictions)
 metrics['val_precision'] = precision_score(val_labels, val_predictions)
 metrics['val_f1'] = f1_score(val_labels, val_predictions)
+
+# Format the metrics to two decimal points
+formatted_metrics = {k: f"{v:.2f}" for k, v in metrics.items()}
+
+# Create a table to display the metrics
+fig, ax = plt.subplots()
+ax.axis('tight')
+ax.axis('off')
+table_data = [
+    ["Metric", "Train", "Test", "Validation"],
+    ["Accuracy", formatted_metrics['train_accuracy'], formatted_metrics['test_accuracy'], formatted_metrics['val_accuracy']],
+    ["Recall", formatted_metrics['train_recall'], formatted_metrics['test_recall'], formatted_metrics['val_recall']],
+    ["Precision", formatted_metrics['train_precision'], formatted_metrics['test_precision'], formatted_metrics['val_precision']],
+    ["F1 Score", formatted_metrics['train_f1'], formatted_metrics['test_f1'], formatted_metrics['val_f1']]
+]
+
+table = ax.table(cellText=table_data, loc='center', cellLoc='center', colWidths=[0.2]*4)
+table.auto_set_font_size(False)
+table.set_fontsize(12)
+table.scale(1.2, 1.2)
+# Save the plot to a file
+plt.savefig('E:/498R/Code/Result/simple/resultTable.png', format='png', dpi=300, bbox_inches='tight')
+plt.show()
 
 # Save the results
 results_path = 'E:/498R/Code/Result/simple/svm_metrics.pkl'
@@ -110,7 +145,7 @@ def predict_new_image(features, model_path='E:/498R/Code/Result/simple/svm_model
 # new_image_features = np.load('path_to_new_image_features.npy')  # Replace with actual features array
 
 # Just replace the path to the saved features array if needed
-test_image='E:/498R/Code/Testingimage/r.jpg'
+test_image='E:/498R/Code/Testingimage/f.jpg'
 faceloading=Faceloading()
 new_image_features = faceloading.extract_features_from_image(test_image)  # Replace with real features from your system
 predict_new_image(new_image_features)
