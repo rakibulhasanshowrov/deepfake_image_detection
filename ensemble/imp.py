@@ -15,3 +15,4 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
 from keras.models import load_model
 import pickle
+from tensorflow.keras.utils import img_to_array,load_img

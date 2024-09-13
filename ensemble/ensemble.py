@@ -22,6 +22,9 @@ X_test_flattened = X_test.reshape(X_test.shape[0], -1)
 # Normalize data for RF and SVM
 scaler = StandardScaler()
 X_train_flattened = scaler.fit_transform(X_train_flattened)
+# Save the scaler
+joblib.dump(scaler, 'scaler.pkl')
+X_train_flattened = scaler.fit_transform(X_train_flattened)
 X_val_flattened = scaler.transform(X_val_flattened)
 X_test_flattened = scaler.transform(X_test_flattened)
 
