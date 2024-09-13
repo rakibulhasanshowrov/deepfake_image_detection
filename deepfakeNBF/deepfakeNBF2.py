@@ -9,13 +9,13 @@ import pandas as pd
 import pickle
 
 # Base dataset directory
-base_dataset_dir = 'E:/498R/dataset_simple'
-# base_dataset_dir = 'E:/498R/Dataset'
+# base_dataset_dir = 'E:/498R/dataset_simple'
+base_dataset_dir = 'E:/498R/Dataset'
 
 class Faceloading:
     def __init__(self, directory):
         self.directory = directory
-        self.target_size = (224, 224)
+        self.target_size = (160, 160)
         self.featureI = []
         self.classL = []
         self.detector = MTCNN()
@@ -126,6 +126,6 @@ for dataset_type in ['Train', 'Test', 'Validation']:
     print(f"Labels Shape for {dataset_type}:", labels.shape)
     
     # Save the features and labels for this dataset
-    output_dir = f'E:/498R/Code/Result/simple/{dataset_type}'
-    # output_dir = f'E:/498R/Code/Result/full/{dataset_type}'
+    # output_dir = f'E:/498R/Code/Result/simple/{dataset_type}'
+    output_dir = f'E:/498R/Code/Result/full/{dataset_type}'
     save_data(features, labels, output_dir, dataset_type.lower())
