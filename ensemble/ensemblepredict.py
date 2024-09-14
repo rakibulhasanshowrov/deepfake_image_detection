@@ -1,7 +1,7 @@
 from imp import *
 from dir import *
 # Define the image size
-image_size = (64, 64)
+image_size = (160, 160)
 
 # Define the CustomVotingClassifier class
 class CustomVotingClassifier:
@@ -11,25 +11,31 @@ class CustomVotingClassifier:
         self.svm_model = svm_model
 
     def predict_with_confidence(self, X):
-        # Unpack inputs
+    # Unpack inputs
         X_images, X_flattened = X
 
         # Get CNN predictions
         cnn_prob = self.cnn_model.predict(X_images)
-        
+        print('CNN probabilities:', cnn_prob)
+
         # Get RF and SVM predictions
         rf_prob = self.rf_model.predict_proba(X_flattened)[:, 1]
         svm_prob = self.svm_model.predict_proba(X_flattened)[:, 1]
-        
+        print('RF probabilities:', rf_prob)
+        print('SVM probabilities:', svm_prob)
+
         # Combine predictions using average
         avg_prob = (cnn_prob.flatten() + rf_prob + svm_prob) / 3
-        
+        print('Average probabilities:', avg_prob)
+
         # Convert probabilities to class labels
-        predicted_label = (avg_prob > 0.5).astype(int)
-        
+        predicted_label = (avg_prob > 0.6).astype(int)
+        print('Predicted label:', predicted_label)
+
         # Get the confidence score (average probability)
         confidence_score = avg_prob[0]
-        
+        print('Confidence score:', confidence_score)
+
         return predicted_label[0], confidence_score
 
     @classmethod
@@ -69,19 +75,28 @@ def preprocess_image(image_path, target_size):
     return image_array
 
 # Define the path to your image
-image_path = 'E:/498R/Dataset3_simple/Real/real_00001.jpg'
+# image_path = 'E:/498R/Dataset3_simple/Real/real_00001.jpg'
+image_path = 'E:/498R/Code/Testingimage/f.jpg'
 
 # Preprocess the image
 img_preprocessed = preprocess_image(image_path, image_size)
 
 # Flatten the preprocessed image for traditional models
-img_flattened = img_preprocessed.reshape(img_preprocessed.shape[0], -1)
+# Flatten the preprocessed image for traditional models
+img_flattened = img_preprocessed.reshape(img_preprocessed.shape[0], 160 * 160 * 3)  # Updated for 160x160 images
+
+
 
 # Normalize the flattened image (Use the scaler used during training)
 img_flattened = scaler.transform(img_flattened)
+print('Scaled image:', img_flattened)
 
 # Make prediction using the ensemble model
 predicted_label, confidence_score = ensemble_model.predict_with_confidence((img_preprocessed, img_flattened))
+# Check the loaded models and scaler
+print('CNN model summary:', cnn_model.summary())
+print('Random Forest model:', rf_model)
+print('SVM model:', svm_model)
 
 # Output the result
 print('Prediction:', 'Fake' if predicted_label == 1 else 'Real')

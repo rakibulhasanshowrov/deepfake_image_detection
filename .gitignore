@@ -1,3 +1,9 @@
 # created by virtualenv automatically
 env/
+*.h5
+/Result/
+/test/
+*.pkl
+*.npy
+*.npz
 

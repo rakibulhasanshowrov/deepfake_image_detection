@@ -23,9 +23,11 @@ rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
 svm_model = SVC(kernel='linear', probability=True)
 
 # Flatten images for traditional ML models
-X_train_flattened = X_train.reshape(X_train.shape[0], -1)
-X_val_flattened = X_val.reshape(X_val.shape[0], -1)
-X_test_flattened = X_test.reshape(X_test.shape[0], -1)
+# Flatten images after resizing to (160, 160, 3)
+X_train_flattened = X_train.reshape(X_train.shape[0], 160 * 160 * 3)  # Update the size
+X_val_flattened = X_val.reshape(X_val.shape[0], 160 * 160 * 3)        # Update the size
+X_test_flattened = X_test.reshape(X_test.shape[0], 160 * 160 * 3)     # Update the size
+
 
 # Train Random Forest and SVM models
 rf_model.fit(X_train_flattened, y_train)
