@@ -1,8 +1,8 @@
 import pickle
 import cv2 as cv
 import numpy as np
-from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.applications.efficientnet import preprocess_input
+from tensorflow.keras.utils import img_to_array
+from keras.applications.vgg16 import VGG16, preprocess_input
 from mtcnn import MTCNN
 
 # Load the saved EfficientNet model
@@ -36,14 +36,16 @@ def predict_image(image_path):
         face_array = np.expand_dims(face_array, axis=0)  # Add batch dimension
         face_array = preprocess_input(face_array)  # Preprocess for EfficientNet
         
-        # Make prediction
+        # Make prediction (assuming sigmoid output)
         prediction = model.predict(face_array)
         confidence_score = prediction[0][0]
+        # print(f"EfficientNet Prediction: {prediction}")
+        # print(f"EfficientNet Confidence Score: {confidence_score}")
         
-        if confidence_score > 0.5:
-            return 0, confidence_score  # Fake image (0), confidence score
-        else:
-            return 1, 1 - confidence_score  # Real image (1), confidence score
+        # In case you want to classify as 1 for Real (confidence < 0.5) and 0 for Fake (confidence >= 0.5)
+        predicted_class = 1 if confidence_score < 0.5 else 0  # Adjust based on how confidence is represented in your model
+        # print(f"Efficientnet predicted Class:{predicted_class}")
+        return predicted_class, confidence_score
     else:
         return None, None  # If no face is detected
 
@@ -54,10 +56,12 @@ if __name__ == "__main__":
         sys.exit(1)
 
     image_path = sys.argv[1]
-    prediction, confidence = predict_image(image_path)
+    # image_path = 'E:/498R/Code/Testingimage/pr.jpg'
+    predicted_class, confidence = predict_image(image_path)
+    # print(f"Efficientnet Returun to parentSystem:{prediction},{confidence}")
 
-    if prediction is not None:
+    if predicted_class is not None:
         # Output prediction and confidence as comma-separated values
-        print(f"{prediction},{confidence:.4f}")
+        print(f"{predicted_class},{confidence:.4f}")
     else:
         print("Face could not be detected for prediction.")

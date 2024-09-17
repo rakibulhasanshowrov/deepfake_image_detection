@@ -81,6 +81,8 @@ def predict_image(image_path):
         # Get confidence score for the predicted class
         predicted_class = 1 if prediction[0] == 1 else 0  # 1 = Real, 0 = Fake
         confidence_score = confidence[0][prediction[0]]
+        # print("SVM Prediction:{prediction}".format(prediction))
+        # print("SVM Confidence ScoreBF:{confidence_score}".format(confidence_score))
 
         return predicted_class, confidence_score
     else:
@@ -94,10 +96,11 @@ if __name__ == "__main__":
 
     image_path = sys.argv[1]
     if os.path.exists(image_path):
-        prediction, confidence = predict_image(image_path)
-        if prediction is not None:
+        predicted_class, confidence = predict_image(image_path)
+        # print("SVM Returun to parentSystem:{prediction},{confidence}".format(prediction,confidence))
+        if predicted_class is not None:
             # Output prediction and confidence as comma-separated values
-            print(f"{prediction},{confidence:.4f}")
+            print(f"{predicted_class},{confidence:.4f}")
         else:
             print("Face could not be detected for prediction.")
     else:

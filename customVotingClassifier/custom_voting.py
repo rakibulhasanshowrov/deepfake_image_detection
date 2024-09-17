@@ -3,10 +3,17 @@ import numpy as np
 
 # Function to run external Python scripts for each model
 def get_prediction_from_script(script_name, image_path):
-    # Run the script and capture the output
     result = subprocess.run(['python', script_name, image_path], capture_output=True, text=True)
-    prediction, confidence = result.stdout.strip().split(',')
-    return int(prediction), float(confidence)
+    print(result.stdout)
+    
+    # Check if the script returned a proper output
+    output = result.stdout.strip()
+    if ',' in output:
+        prediction, confidence = output.split(',')
+        return int(prediction), float(confidence)
+    else:
+        print(f"Error: Script {script_name} did not return a valid prediction.")
+        return None, None
 
 # Custom voting classifier
 class CustomVotingClassifier:
@@ -33,7 +40,7 @@ class CustomVotingClassifier:
 
 # Example usage
 if __name__ == "__main__":
-    image_path = 'path_to_your_image.jpg'
+    image_path = 'E:/498R/Code/Testingimage/pr.jpg'
     
     # List of scripts for EfficientNet, SVM, and Random Forest
     model_scripts = ['efficientnet_predict.py', 'svm_predict.py', 'rf_predict.py']
