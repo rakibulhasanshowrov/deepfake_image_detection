@@ -49,19 +49,19 @@ def predict_image(image_path):
     else:
         return None, None  # If no face is detected
 
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) != 2:
-        print("Usage: python efficientnet_predict.py <image_path>",flush=True)
-        sys.exit(1)
+# if __name__ == "__main__":
+#     import sys
+#     if len(sys.argv) != 2:
+#         print("Usage: python efficientnet_predict.py <image_path>",flush=True)
+#         sys.exit(1)
 
-    image_path = sys.argv[1]
-    # image_path = 'E:/498R/Code/Testingimage/pr.jpg'
-    predicted_class, confidence_score = predict_image(image_path)
-    # print(f"Efficientnet Returun to parentSystem:{prediction},{confidence}")
+# image_path = sys.argv[1]
+image_path = 'E:/498R/Code/Testingimage/pr.jpg'
+predicted_class, confidence_score = predict_image(image_path)
+# print(f"Efficientnet Returun to parentSystem:{prediction},{confidence}")
 
-    if predicted_class is not None:
-        # Output prediction and confidence as comma-separated values
-        print(f"{predicted_class},{confidence_score:.4f}")
-    else:
-        print("Face could not be detected for prediction.")
+if predicted_class is not None:
+    # Output prediction and confidence as comma-separated values
+    print(f"{predicted_class},{confidence_score:.4f}")
+else:
+    print("Face could not be detected for prediction.")

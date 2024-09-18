@@ -76,6 +76,7 @@ def predict_image(image_path):
 
         # Predict the class
         prediction = clf.predict(features)
+        print(prediction)
         confidence = clf.predict_proba(features)
 
         # Get confidence score for the predicted class

@@ -46,6 +46,7 @@ def extract_color_histogram(image):
 def extract_features(image_path):
     image = cv2.imread(image_path)
     rects = detector(image, 1)
+    
 
     if len(rects) > 0:
         x, y, w, h = rects[0].left(), rects[0].top(), rects[0].width(), rects[0].height()
@@ -91,7 +92,7 @@ def predict_image(image_path):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python svm_predict.py <image_path>")
+        print("Usage: python svm_predict.py <image_path>",flush=True)
         sys.exit(1)
 
     image_path = sys.argv[1]

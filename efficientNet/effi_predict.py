@@ -35,6 +35,10 @@ def predict_image(image_path):
         # Make prediction
         prediction = model.predict(face_array)
         confidence_score = prediction[0][0]
+        print(prediction)
+        scaled_confidence_score = confidence_score * 1e6  # Scale up by 1 million
+        confidence_score_int = int(scaled_confidence_score)
+        print(confidence_score_int)
         
         if confidence_score > 0.5:
             print(f"Prediction: Fake image with confidence score: {confidence_score:.4f}")

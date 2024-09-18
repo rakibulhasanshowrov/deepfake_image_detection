@@ -40,7 +40,7 @@ class CustomVotingClassifier:
 
 # Example usage
 if __name__ == "__main__":
-    image_path = 'E:/498R/Code/Testingimage/pr.jpg'
+    image_path = 'E:/498R/Code/Testingimage/r.jpg'
     
     # List of scripts for EfficientNet, SVM, and Random Forest
     model_scripts = ['efficientnet_predict.py', 'svm_predict.py', 'rf_predict.py']
