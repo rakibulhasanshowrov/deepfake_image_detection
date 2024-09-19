@@ -56,17 +56,28 @@ def predict(image_path, model_path='random_forest_model.pkl'):
     
     return predicted_class, confidence
 
+# Function to save prediction and confidence to a file
+def save_result(output_file, predicted_class, confidence_score):
+    """Save the result to a file."""
+    with open(output_file, 'w') as file:
+        file.write(f"{predicted_class},{confidence_score:.4f}")
+
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) != 2:
-        print("Usage: python rf_predict.py <image_path>")
+
+    if len(sys.argv) != 3:
+        print("Usage: python rf_predict.py <image_path> <output_file>", flush=True)
         sys.exit(1)
 
     image_path = sys.argv[1]
-    
-    predicted_class, confidence = predict(image_path)
-    if predicted_class is not None:
-        # Output prediction and confidence as comma-separated values
-        print(f"{predicted_class},{confidence:.4f}")
-    else:
-        print("Error during prediction.")
+    output_file = sys.argv[2]
+
+    try:
+        predicted_class, confidence = predict(image_path)
+        # Save prediction and confidence score to the output file
+        save_result(output_file, predicted_class, confidence)
+    except ValueError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+

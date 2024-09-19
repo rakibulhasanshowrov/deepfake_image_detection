@@ -47,7 +47,6 @@ def extract_features(image_path):
     image = cv2.imread(image_path)
     rects = detector(image, 1)
     
-
     if len(rects) > 0:
         x, y, w, h = rects[0].left(), rects[0].top(), rects[0].width(), rects[0].height()
         face = image[y:y+h, x:x+w]  # Crop to the face region
@@ -82,27 +81,33 @@ def predict_image(image_path):
         # Get confidence score for the predicted class
         predicted_class = 1 if prediction[0] == 1 else 0  # 1 = Real, 0 = Fake
         confidence_score = confidence[0][prediction[0]]
-        # print("SVM Prediction:{prediction}".format(prediction))
-        # print("SVM Confidence ScoreBF:{confidence_score}".format(confidence_score))
 
         return predicted_class, confidence_score
     else:
         return None, None
 
+def save_result(output_file, predicted_class, confidence_score):
+    """Save the result to a file."""
+    with open(output_file, 'w') as file:
+        file.write(f"{predicted_class},{confidence_score:.4f}")
+
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) != 2:
-        print("Usage: python svm_predict.py <image_path>",flush=True)
+
+    if len(sys.argv) != 3:
+        print("Usage: python svm_predict.py <image_path> <output_file>", flush=True)
         sys.exit(1)
 
     image_path = sys.argv[1]
+    output_file = sys.argv[2]
+
     if os.path.exists(image_path):
         predicted_class, confidence = predict_image(image_path)
-        # print("SVM Returun to parentSystem:{prediction},{confidence}".format(prediction,confidence))
         if predicted_class is not None:
-            # Output prediction and confidence as comma-separated values
-            print(f"{predicted_class},{confidence:.4f}")
+            # Save prediction and confidence score to the output file
+            save_result(output_file, predicted_class, confidence)
         else:
             print("Face could not be detected for prediction.")
     else:
         print(f"Error: Image path {image_path} does not exist.")
+
