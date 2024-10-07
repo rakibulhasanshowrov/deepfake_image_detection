@@ -50,7 +50,7 @@ def load_images_and_extract_features(directory):
 # Main function
 def main():
     # Load dataset and extract features
-    dataset_directory = 'E:/498R/Dataset3_simple/'
+    dataset_directory = 'E:/498R/Dataset3/'
     X, y = load_images_and_extract_features(dataset_directory)
     
     # Split data into training, validation, and testing sets

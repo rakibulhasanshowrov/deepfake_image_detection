@@ -12,7 +12,8 @@ import pickle
 
 # Initialize face detector
 detector = dlib.get_frontal_face_detector()
-
+fake_dir = 'E:/498R/20k dataset/20K Splitted Dataset/train/Fake'
+real_dir = 'E:/498R/20k dataset/20K Splitted Dataset/train/Real'
 # Fixed face size for feature extraction
 fixed_face_size = (128, 128)
 
@@ -48,10 +49,11 @@ def extract_features(image_path):
     if len(rects) > 0:
         x, y, w, h = rects[0].left(), rects[0].top(), rects[0].width(), rects[0].height()
         face = image[y:y+h, x:x+w]  # Crop to the face region
-
+        if face.size == 0:
+            print(f"Error: Face region is empty in {image_path}")
+            return None
         # Resize face to fixed size (128x128)
         face_resized = cv2.resize(face, fixed_face_size)
-
         # Extract features
         lbp_features = extract_lbp(face_resized)
         hog_features = extract_hog(face_resized)
@@ -63,53 +65,68 @@ def extract_features(image_path):
     else:
         return None
 
-# Directory paths
-dataset_dir = 'E:/498R/Dataset3_simple'
-fake_dir = os.path.join(dataset_dir, 'Fake')
-real_dir = os.path.join(dataset_dir, 'Real')
-
-# Load and process images
-data = []
-labels = []
-invalid_images = []
-
-for category, label in [('Fake', 0), ('Real', 1)]:
-    category_dir = os.path.join(dataset_dir, category)
-    for file_name in os.listdir(category_dir):
-        file_path = os.path.join(category_dir, file_name)
+# Load and process images with custom limits
+def load_images_with_limit(fake_limit=None, real_limit=None):
+    data = []
+    labels = []
+    invalid_images = []
+    
+    # Process Fake images
+    fake_count = 0
+    for file_name in os.listdir(fake_dir):
+        if fake_limit and fake_count >= fake_limit:
+            break
+        file_path = os.path.join(fake_dir, file_name)
         features = extract_features(file_path)
-        
-        # Check if features are extracted successfully
         if features is not None and len(features) > 0:
             data.append(features)
-            labels.append(label)
+            labels.append(0)  # Fake label
+            fake_count += 1
+        else:
+            invalid_images.append(file_path)
+    
+    # Process Real images
+    real_count = 0
+    for file_name in os.listdir(real_dir):
+        if real_limit and real_count >= real_limit:
+            break
+        file_path = os.path.join(real_dir, file_name)
+        features = extract_features(file_path)
+        if features is not None and len(features) > 0:
+            data.append(features)
+            labels.append(1)  # Real label
+            real_count += 1
         else:
             invalid_images.append(file_path)
 
-# Log invalid images if any face was not detected or features couldn't be extracted
-if invalid_images:
-    print(f"Could not extract features from the following images (no face detected or other issue):")
-    for img_path in invalid_images:
-        print(img_path)
+    # Log invalid images if any face was not detected or features couldn't be extracted
+    if invalid_images:
+        print(f"Could not extract features from the following images (no face detected or other issue):")
+        for img_path in invalid_images:
+            print(img_path)
 
-# Convert to numpy arrays after ensuring feature vector lengths are consistent
-if len(data) > 0 and all(len(f) == len(data[0]) for f in data):
+    # Convert to numpy arrays
     data = np.array(data)
     labels = np.array(labels)
-else:
-    print("Error: Inconsistent feature vector lengths.")
-    exit(1)
+    
+    return data, labels,fake_count,real_count
+
+# Specify how many images to process from each category
+
+features, labels,fake_count,real_count = load_images_with_limit(fake_limit=150, real_limit=150)
+print(f"Fake:{fake_count}")
+print(f"Real:{real_count}")
 
 # Normalize the data
 scaler = StandardScaler()
-data = scaler.fit_transform(data)
+features = scaler.fit_transform(features)
 
 # Save the extracted features and labels
-np.save('features.npy', data)
+np.save('features.npy', features)
 np.save('labels.npy', labels)
 
 # Split dataset into training, validation, and test sets
-X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=42)
 
 # Train SVM classifier
@@ -146,3 +163,4 @@ with open('svm_classification_report.txt', 'w') as report_file:
 
 # Save the StandardScaler for future use
 dump(scaler, 'scaler.joblib')
+
