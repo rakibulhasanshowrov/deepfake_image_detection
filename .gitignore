@@ -9,3 +9,4 @@ env/
 **/Preprocessed/
 *.pth
 *.csv
+*.joblib
