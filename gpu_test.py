@@ -1,8 +1,8 @@
-import tensorflow as tf
+import torch
 
-# Check GPU availability
-gpus = tf.config.list_physical_devices('GPU')
-if gpus:
-    print("Num GPUs Available: ", len(gpus))
-else:
-    print("No GPUs available.")
+print("Number of GPU: ", torch.cuda.device_count())
+print("GPU Name: ", torch.cuda.get_device_name())
+
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)

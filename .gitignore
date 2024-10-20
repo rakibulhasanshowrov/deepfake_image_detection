@@ -6,4 +6,6 @@ env/
 *.pkl
 *.npy
 *.npz
-
+**/Preprocessed/
+*.pth
+*.csv
