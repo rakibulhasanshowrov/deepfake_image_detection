@@ -6,8 +6,8 @@ from mtcnn import MTCNN
 detector = MTCNN()
 
 # Directories
-fake_dir = "E:/498R/Dataset3_simple/Fake"
-real_dir = "E:/498R/Dataset3_simple/Real"
+fake_dir = "E:/498R/Dataset3/Fake"
+real_dir = "E:/498R/Dataset3/Real"
 preprocessed_fake_dir = "E:/498R/Code/efficientnettorch/Preprocessed/Fake"
 preprocessed_real_dir = "E:/498R/Code/efficientnettorch/Preprocessed/Real"
 

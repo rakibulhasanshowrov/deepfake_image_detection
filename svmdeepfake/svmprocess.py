@@ -8,8 +8,8 @@ from skimage.feature import local_binary_pattern, hog
 detector = dlib.get_frontal_face_detector()
 
 # Directories for fake and real images
-fake_dir = "E:/498R/20k dataset/20K Splitted Dataset/train/Fake"
-real_dir = "E:/498R/20k dataset/20K Splitted Dataset/train/Real"
+fake_dir = "E:/498R/Dataset3/Fake"
+real_dir = "E:/498R/Dataset3/Real"
 
 # Fixed face size for feature extraction
 fixed_face_size = (128, 128)
